@@ -1,0 +1,24 @@
+{
+  "name": "react-music-player",
+  "version": "1.0.0",
+  "description": "基于React开发的简单的网页音乐播放器",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TimeAway/react.git"
+  },
+  "keywords": [
+    "react",
+    "music-player",
+    "webapp"
+  ],
+  "author": "huibin",
+  "license": "Apache License 2.0",
+  "bugs": {
+    "url": "https://github.com/TimeAway/react/issues"
+  },
+  "homepage": "https://github.com/TimeAway/react#readme"
+}
