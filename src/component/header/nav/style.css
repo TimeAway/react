@@ -1,0 +1,30 @@
+.header-nav{
+	overflow: hidden;
+	float: left;
+}
+.header-nav li {
+	float: left;
+	list-style: none;
+	position: relative;
+}
+.header-nav li a{
+	float: left;
+	color: #fff;
+	font-size: 14px;
+	height: 70px;
+	line-height: 70px;
+	text-decoration: none;
+	padding: 0 19px;
+}
+.header-nav li a:hover{
+	background-color: #000;
+}
+.hot{
+	display: block;
+	width: 28px;
+	height: 19px;
+	position: absolute;
+	top: 12px;
+	left: 80px; 
+	background: url('../topbar.png') no-repeat -190px 0;
+}

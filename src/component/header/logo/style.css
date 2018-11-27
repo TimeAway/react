@@ -1,0 +1,6 @@
+.header-logo{
+	float: left;
+	height: 70px;
+	width: 176px;
+	background: url('../topbar.png') no-repeat 0 0;
+}
