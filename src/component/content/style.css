@@ -1,0 +1,16 @@
+.content{
+	width: 980px;
+	min-width: 700px;
+	border: 1px solid #d3d3d3;
+	margin: 0 auto;
+	overflow: hidden;
+}
+.content-left{
+	float: left;
+	width: 660px;
+	padding: 30px;
+	border-right: 1px solid #d3d3d3;
+}
+.content-right{
+	float: left;
+}
