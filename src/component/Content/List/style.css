@@ -14,7 +14,7 @@
 }
 .music-list .music-list-table{
 	width: 100%;
-	margin-top: 20px;
+	margin-top: 10px;
 	font-size: 12px;
 	color: #666;
 	text-align: left;
@@ -23,11 +23,13 @@
 .music-list .music-list-table tr{
 	line-height: 25px;
 }
-.music-list .music-list-table tr a{
+.music-list .music-list-table tr button{
 	color: #666;
-	text-decoration: none;
+	background: none;
+	border: none;
+	cursor: pointer;
 }
-.music-list .music-list-table tr a:hover{
+.music-list .music-list-table tr button:hover{
 	text-decoration: underline;
 }
 .music-list .music-list-table tr td{

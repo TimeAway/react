@@ -43,6 +43,13 @@
 .player-control .player-btn{
 	margin: 5px 0;
 }
+.player-control .player-info{
+	position: absolute;
+	color: #f1f1f1;
+	font-size: 13px;
+	top: 15px;
+	left: 12px;
+}
 .player-control .player-progress{
 	position: relative;
 	margin-top: 10px;

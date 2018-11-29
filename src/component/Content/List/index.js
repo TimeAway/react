@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 import './style.css';
 
 class List extends Component {
+	musicClick(id){
+		this.props.playerMusic(id);
+	}
+
 	render(){
 		return (
 			<div className="music-list">
@@ -21,7 +25,9 @@ class List extends Component {
 								return (
 									<tr key={index}>
 										<td>{item.id}</td>
-										<td className="over-text"><a href={item.href} title={item.title}>{item.title}</a></td>
+										<td className="over-text">
+											<button type="button" title={item.title} onClick={this.musicClick.bind(this, item.id)}>{item.title}</button>
+										</td>
 										<td>{item.time}</td>
 										<td className="over-text">{item.singer}</td>
 									</tr>
