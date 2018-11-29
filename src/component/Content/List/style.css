@@ -1,0 +1,35 @@
+.over-text{
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.music-list{
+	margin: 30px 20px 0 20px;
+}
+.music-list h5{
+	color: #333;
+	padding-bottom: 10px;
+	border-bottom: 1px solid #ccc;
+}
+.music-list .music-list-table{
+	width: 100%;
+	margin-top: 20px;
+	font-size: 12px;
+	color: #666;
+	text-align: left;
+	table-layout: fixed;
+}
+.music-list .music-list-table tr{
+	line-height: 25px;
+}
+.music-list .music-list-table tr a{
+	color: #666;
+	text-decoration: none;
+}
+.music-list .music-list-table tr a:hover{
+	text-decoration: underline;
+}
+.music-list .music-list-table tr td{
+	padding: 0 2px;
+}

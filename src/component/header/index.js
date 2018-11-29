@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import Logo from './logo';
-import Nav from './nav';
-import Search from './search';
-import Login from './login';
-import Contribute from './contribute';
+import Logo from './Logo';
+import Nav from './Nav';
+import Search from './Search';
+import Login from './Login';
+import Contribute from './Contribute';
 import './style.css';
 
 class Header extends Component {
