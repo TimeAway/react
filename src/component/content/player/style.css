@@ -9,6 +9,9 @@
 	margin-bottom: 20px;
 	overflow: hidden;
 }
+.content-player-top{
+	overflow: hidden;
+}
 
 .photo{
 	float: left;
@@ -29,51 +32,128 @@
 	left: -4px;
 	background: url('../coverall.png') no-repeat -140px -580px;
 }
-.photo .player-btn{
+.player-control{
+	position: relative;
 	text-align: center;
 	background-color: #242424;
 	border-radius: 5px;
 	margin-top: 20px;
-	height: 40px;
+	overflow: hidden;
 }
-.photo .player-btn .pre,.play,.next,.pause{
+.player-control .player-btn{
+	margin: 5px 0;
+}
+.player-control .player-progress{
+	position: relative;
+	margin-top: 10px;
+	overflow: hidden;
+}
+.player-control .player-progress .progress{
+	position: relative;
+	float: left;
+	height: 10px;
+	width: 545px;
+	margin: 10px 20px;
+	border-radius: 5px;
+	background-color: #535353;
+}
+.player-control .player-progress .progress .progress-top{
+	position: absolute;
+	left: 0;
+	top: 0;
+	height: 10px;
+	border-radius: 5px;
+	background-color: red;
+}
+.player-control .player-progress .progress .slide{
+	position: absolute;
+	left: -10px;
+	top: -5px;
+	width: 20px;
+	height: 20px;
+	background-color: #fff;
+	border-radius: 50%;
+}
+.player-control .player-progress .progress .slide:hover{
+	box-shadow: 0 0 1px 1px #e3e3e3;
+}
+.player-control .player-progress .progress .slide .slide-inner{
+	position: absolute;
+	width: 10px;
+	height: 10px;
+	background-color: red;
+	top: 5px;
+	left: 5px;
+	border-radius: 50%;
+}
+.player-control .player-progress .time{
+	float: left;
+	font-size: 12px;
+	line-height: 29px;
+	color: #d2d2d2;
+}
+
+.player-control button{
 	background: none;
 	border: none;
 	text-indent: -9999px;
+	cursor: pointer;
 }
-.photo .player-btn .pre{
+.player-control .pre{
 	height: 32px;
 	width: 28px;
 	background: url('../playbar.png') no-repeat -1px -125px;
 }
-.photo .player-btn .pre:hover{
-	background: url('../playbar.png') no-repeat -31px -125px;
+.player-control .pre:hover{
+	background-position: -31px -125px;
 }
-.photo .player-btn .play{
+.player-control .play{
 	height: 36px;
 	width: 36px;
 	margin: 0 10px;
 	background: url('../playbar.png') no-repeat -1px -202px;
 }
-.photo .player-btn .play:hover{
-	background: url('../playbar.png') no-repeat -41px -202px;
+.player-control .play:hover{
+	background-position: -41px -202px;
 }
-.photo .player-btn .pause{
+.player-control .pause{
 	height: 36px;
 	width: 36px;
 	margin: 0 10px;
 	background: url('../playbar.png') no-repeat -1px -163px;
 }
-.photo .player-btn .pause:hover{
-	background: url('../playbar.png') no-repeat -41px -163px;
+.player-control .pause:hover{
+	background-position: -41px -163px;
 }
-.photo .player-btn .next{
+.player-control .next{
 	height: 32px;
 	width: 28px;
 	background: url('../playbar.png') no-repeat -81px -125px;
 }
-.photo .player-btn .next:hover{
-	background: url('../playbar.png') no-repeat -111px -125px;
+.player-control .next:hover{
+	background-position: -111px -125px;
+}
+.player-control .volume{
+	position: absolute;
+	right: 20px;
+	height: 20px;
+	width: 20px;
+	margin-top: 9px;
+	background: url('../playbar.png') no-repeat -6px -250px;
+}
+.player-control .volume:hover{
+	background-position: -35px -250px;
+}
+.player-control .circulate{
+	position: absolute;
+	right: 50px;
+	height: 20px;
+	width: 20px;
+	margin-top: 9px;
+	background: url('../playbar.png') no-repeat -70px -250px;
+}
+.player-control .circulate:hover{
+	background-position: -97px -250px;
 }
 
 .player{
