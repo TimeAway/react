@@ -1,3 +1,7 @@
+# react-music-player
+
+### 一款基于react开发的简单的网页音乐播放器
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
