@@ -34,57 +34,133 @@
 }
 .player-control{
 	position: relative;
-	text-align: center;
 	background-color: #242424;
 	border-radius: 5px;
 	margin-top: 20px;
+	padding: 0 20px;
 	overflow: hidden;
 }
 .player-control .player-btn{
-	margin: 5px 0;
+	text-align: center;
+	margin: 10px 0;
+	line-height: 32px;
 }
 .player-control .player-info{
 	position: absolute;
+	left: 20px;
 	color: #f1f1f1;
 	font-size: 13px;
-	top: 15px;
-	left: 12px;
 }
+.player-control button{
+	background: none;
+	border: none;
+	text-indent: -9999px;
+	cursor: pointer;
+}
+.player-control .pre{
+	height: 24px;
+	width: 24px;
+	background: url('../playbar.png') no-repeat -2px -132px;
+}
+.player-control .pre:hover{
+	background-position: -32px -132px;
+}
+.player-control .play{
+	height: 32px;
+	width: 32px;
+	margin: 0 10px;
+	background: url('../playbar.png') no-repeat -2px -206px;
+}
+.player-control .play:hover{
+	background-position: -42px -206px;
+}
+.player-control .pause{
+	height: 32px;
+	width: 32px;
+	margin: 0 10px;
+	background: url('../playbar.png') no-repeat -2px -167px;
+}
+.player-control .pause:hover{
+	background-position: -42px -167px;
+}
+.player-control .next{
+	height: 24px;
+	width: 24px;
+	background: url('../playbar.png') no-repeat -82px -132px;
+}
+.player-control .next:hover{
+	background-position: -112px -132px;
+}
+.player-control .volume{
+	position: absolute;
+	right: 20px;
+	top: 18px;
+	height: 18px;
+	width: 18px;
+	background: url('../playbar.png') no-repeat -6px -251px;
+}
+.player-control .volume:hover{
+	background-position: -35px -251px;
+}
+
+.player-control .random, .single, .order{
+	position: absolute;
+	top: 17px;
+	right: 61px;
+	height: 18px;
+	width: 18px;
+}
+
+.player-control .random{
+	background: url('../playbar.png') no-repeat -70px -251px;
+}
+.player-control .random:hover{
+	background-position: -97px -251px;
+}
+.player-control .single{
+	background: url('../playbar.png') no-repeat -70px -346px;
+}
+.player-control .single:hover{
+	background-position: -97px -346px;
+}
+.player-control .order{
+	background: url('../playbar.png') no-repeat -6px -346px;
+}
+.player-control .order:hover{
+	background-position: -36px -346px;
+}
+
 .player-control .player-progress{
-	position: relative;
-	margin-top: 10px;
+	text-align: left;
+	line-height: 30px;
 	overflow: hidden;
 }
 .player-control .player-progress .progress{
-	position: relative;
-	float: left;
+	display: inline-block;
 	height: 10px;
 	width: 545px;
-	margin: 10px 20px;
 	border-radius: 5px;
 	background-color: #535353;
 }
 .player-control .player-progress .progress .progress-top{
-	position: absolute;
-	left: 0;
-	top: 0;
 	height: 10px;
+	width: 20px;
 	border-radius: 5px;
 	background-color: red;
 }
-.player-control .player-progress .progress .slide{
+.player-control .player-progress .slide{
 	position: absolute;
-	left: -10px;
-	top: -5px;
 	width: 20px;
 	height: 20px;
+	left: 10px;
+	margin-top: 5px;
 	background-color: #fff;
 	border-radius: 50%;
 }
-.player-control .player-progress .progress .slide:hover{
+.player-control .player-progress .slide:hover{
 	box-shadow: 0 0 1px 1px #e3e3e3;
 }
-.player-control .player-progress .progress .slide .slide-inner{
+.player-control .player-progress .slide .slide-inner{
 	position: absolute;
 	width: 10px;
 	height: 10px;
@@ -94,73 +170,14 @@
 	border-radius: 50%;
 }
 .player-control .player-progress .time{
-	float: left;
-	font-size: 12px;
-	line-height: 29px;
-	color: #d2d2d2;
-}
-
-.player-control button{
-	background: none;
-	border: none;
-	text-indent: -9999px;
-	cursor: pointer;
-}
-.player-control .pre{
-	height: 32px;
-	width: 28px;
-	background: url('../playbar.png') no-repeat -1px -125px;
-}
-.player-control .pre:hover{
-	background-position: -31px -125px;
-}
-.player-control .play{
-	height: 36px;
-	width: 36px;
-	margin: 0 10px;
-	background: url('../playbar.png') no-repeat -1px -202px;
-}
-.player-control .play:hover{
-	background-position: -41px -202px;
-}
-.player-control .pause{
-	height: 36px;
-	width: 36px;
-	margin: 0 10px;
-	background: url('../playbar.png') no-repeat -1px -163px;
-}
-.player-control .pause:hover{
-	background-position: -41px -163px;
-}
-.player-control .next{
-	height: 32px;
-	width: 28px;
-	background: url('../playbar.png') no-repeat -81px -125px;
-}
-.player-control .next:hover{
-	background-position: -111px -125px;
-}
-.player-control .volume{
 	position: absolute;
 	right: 20px;
-	height: 20px;
-	width: 20px;
-	margin-top: 9px;
-	background: url('../playbar.png') no-repeat -6px -250px;
+	bottom: 0px;
+	font-size: 12px;
+	color: #d2d2d2;
 }
-.player-control .volume:hover{
-	background-position: -35px -250px;
-}
-.player-control .circulate{
-	position: absolute;
-	right: 50px;
-	height: 20px;
-	width: 20px;
-	margin-top: 9px;
-	background: url('../playbar.png') no-repeat -70px -250px;
-}
-.player-control .circulate:hover{
-	background-position: -97px -250px;
+.player-control .player-progress .time em{
+	font-style: initial;
 }
 
 .player{

@@ -3,7 +3,7 @@ import './style.css';
 
 class List extends Component {
 	musicClick(id){
-		this.props.playerMusic(id);
+		this.props.choseMusic(id);
 	}
 
 	render(){

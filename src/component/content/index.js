@@ -12,7 +12,7 @@ class Content extends Component {
 			currMusic: 0	// 当前播放的音乐
 		}
 
-		this.playerMusic = this.playerMusic.bind(this);
+		this.choseMusic = this.choseMusic.bind(this);
 	}
 
 	componentWillMount(){
@@ -25,9 +25,16 @@ class Content extends Component {
 		})
 	}
 
-	playerMusic(id){
+	choseMusic(id){
+		const num = this.state.musicList.length - 1;
+		if (id < 0) {
+			id = num;
+		}
+		if (id > num) {
+			id = 0;
+		}
 		this.setState({
-			currMusic: --id
+			currMusic: id
 		})
 	}
 
@@ -35,10 +42,10 @@ class Content extends Component {
 		return (
 			<div className="content">
 				<div className="content-left">
-					<Player music={this.state.musicList[this.state.currMusic]}/>
+					<Player music={this.state.musicList[this.state.currMusic]} choseMusic={this.choseMusic} />
 				</div>
 				<div className="content-right">
-					<List list={this.state.musicList} playerMusic={this.playerMusic}/>
+					<List list={this.state.musicList} choseMusic={this.choseMusic} />
 				</div>
 			</div>
 		)
