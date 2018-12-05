@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import $ from 'jquery';
 import Player from './Player';
 import List from './List';
 import './style.css';
@@ -16,11 +17,14 @@ class Content extends Component {
 	}
 
 	componentWillMount(){
-		fetch('/mock/music.json').then(response => {
-			if (response.ok) {
-				response.json().then(data => {
-					this.setState(data)
-				})
+		const $this = this;
+		$.ajax({
+			type: 'get',
+			dataType: 'json',
+			async: false,	// 这里使用同步的方式
+			url: '/mock/music.json',
+			success(data){
+				$this.setState(data)
 			}
 		})
 	}

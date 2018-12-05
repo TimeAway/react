@@ -1,5 +1,9 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import './style.css';
+
+let rotateTimer = 0;		// 图片旋转计时器
+let angle = 0;				// 图片旋转的角度
+let music = null;
 
 class Player extends Component {
 	constructor(props){
@@ -31,31 +35,61 @@ class Player extends Component {
 		})
 	}
 
+	// 图片旋转
+	rotate(){
+		this.rotatePause();
+		const image = document.getElementById("image");
+		rotateTimer = setInterval(() => {
+			image.style.transform = `rotate(${angle}deg)`;
+			if (++angle > 360) angle = 0;
+		}, 50);
+		console.log("开始：" + rotateTimer);
+	}
+
+	// 停止图片旋转
+	rotatePause(){
+		console.log("停止：" + rotateTimer);
+		clearInterval(rotateTimer);
+		rotateTimer = 0;
+	}
+
 	// 上一首
 	playPreMusic(id){
 		this.props.choseMusic(--id);
+		this.play();
 	}
 
 	// 播放/暂停
 	playOrPauseMusic(){
-		const music = document.getElementById("music");
-		let isPlaying = this.state.isPlaying;
-		if (!isPlaying && music.readyState === 4 ) {
-			music.play();
-			isPlaying = true;
-		}else{
-			music.pause();
-			isPlaying = false;
+		if (this.state.isPlaying) {
+			this.pause();
+		}else {
+			this.play();
 		}
+	}
 
+	play(){
 		this.setState({
-			isPlaying: isPlaying
+			isPlaying: true
+		}, () => {
+			music.play();
+			this.rotate();
+		})
+	}
+
+	pause(){
+		this.setState({
+			isPlaying: false
+		}, () => {
+			music.pause();
+			this.rotatePause();
 		})
 	}
 
 	// 下一首
 	playNextMusic(id){
 		this.props.choseMusic(++id);
+		this.play();
 	}
 
 	// 切换播放模式
@@ -146,13 +180,11 @@ class Player extends Component {
 	}
 
 	render(){
-		const musicData = this.props.music;
-		if (!musicData) return (<Fragment></Fragment>);
-		const { id, title, singer, time, href, album, image, lyric } = musicData;
+		const { id, title, singer, time, href, album, image, lyric } = this.props.music;
 		return (
 			<div className="content-player">
 				<div className="content-player-top">
-					<div className="photo">
+					<div className="photo" id="image">
 						<img src={image} alt="图像"/>
 						<span></span>
 					</div>
@@ -205,6 +237,10 @@ class Player extends Component {
 				</div>
 			</div>
 		)
+	}
+
+	componentDidUpdate(){
+		music = document.getElementById("music");
 	}
 }
 
