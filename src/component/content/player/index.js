@@ -1,21 +1,26 @@
 import React, { Component } from 'react';
 import './style.css';
+import $ from 'jquery';
 
 let rotateTimer = 0;		// 图片旋转计时器
 let angle = 0;				// 图片旋转的角度
-let music = null;
+let slideLeft = 20;				// 滑块距离父容器的距离
+let slideWidth = 10;			// 滑块的宽度
+let maxLeft = 0, minLeft = 0;	// 距离左边最大、最小的距离
+let contentLeft = 0;		// 容器到屏幕左边的距离
+let progressLeft = 20;		// 进度条到父容器的距离
+let progressWidth = 0;		// 进度条的宽度
+let curWidth = 0;			// 当前进度的宽度
+let $slide = null, $progress = null, $curProgress = null, $content = null, audio = null;
 
 class Player extends Component {
 	constructor(props){
 		super(props);
 		this.state = {
-			isMore: false,	// 歌词是否展开状态
+			isMore: false,		// 歌词是否展开状态
 			isPlaying: false,	// 是否在播放
-			circulate: 1,	// 播放模式,1|随机播放 2|单曲循环 3|列表循环
-			isDragging: false,	// 是否正在拖动
-			startX: 0,			// 拖动的起始位置
-			startPosition: 0,
-			currentPosition: 0
+			circulate: 1,		// 播放模式,1|随机播放 2|单曲循环 3|列表循环
+			curTime: "00:00"	// 当前播放时间
 		}
 
 		this.ctrlOrMore = this.ctrlOrMore.bind(this);
@@ -23,9 +28,7 @@ class Player extends Component {
 		this.playNextMusic = this.playNextMusic.bind(this);
 		this.playOrPauseMusic = this.playOrPauseMusic.bind(this);
 		this.switchCirculate = this.switchCirculate.bind(this);
-		this.processClick = this.processClick.bind(this);
 		this.slideClick = this.slideClick.bind(this);
-		this.slideDraging = this.slideDraging.bind(this);
 	}
 
 	// 歌词的展示，全部展示或部分展示
@@ -38,17 +41,15 @@ class Player extends Component {
 	// 图片旋转
 	rotate(){
 		this.rotatePause();
-		const image = document.getElementById("image");
 		rotateTimer = setInterval(() => {
-			image.style.transform = `rotate(${angle}deg)`;
 			if (++angle > 360) angle = 0;
+
+			$("#image").css("transform", `rotate(${angle}deg)`);
 		}, 50);
-		console.log("开始：" + rotateTimer);
 	}
 
 	// 停止图片旋转
 	rotatePause(){
-		console.log("停止：" + rotateTimer);
 		clearInterval(rotateTimer);
 		rotateTimer = 0;
 	}
@@ -56,7 +57,6 @@ class Player extends Component {
 	// 上一首
 	playPreMusic(id){
 		this.props.choseMusic(--id);
-		this.play();
 	}
 
 	// 播放/暂停
@@ -69,27 +69,24 @@ class Player extends Component {
 	}
 
 	play(){
+		audio.play();
+		this.rotate();
 		this.setState({
 			isPlaying: true
-		}, () => {
-			music.play();
-			this.rotate();
 		})
 	}
 
 	pause(){
+		audio.pause();
+		this.rotatePause();
 		this.setState({
 			isPlaying: false
-		}, () => {
-			music.pause();
-			this.rotatePause();
 		})
 	}
 
 	// 下一首
 	playNextMusic(id){
 		this.props.choseMusic(++id);
-		this.play();
 	}
 
 	// 切换播放模式
@@ -100,83 +97,28 @@ class Player extends Component {
 		})
 	}
 
-	// 拖动滑块
-	slideDraging(clientX){
-		if (!this.state.isDragging) return;
-		
-		this.setPosition(clientX);
-	}
+	setPosition(event){
+		slideLeft = event.clientX - contentLeft + slideWidth;
+		slideLeft = slideLeft > maxLeft ? maxLeft : slideLeft;
+		slideLeft = slideLeft < minLeft ? minLeft : slideLeft;	// 防止滑块滑出进度条
+		curWidth = slideLeft - progressLeft + slideWidth;
 
-	dragStart(event){
-		this.setState({
-			isDragging: true,
-			startX: event.clientX,	// 记录开始滑动时的clientX
-			startPosition: this.state.currentPosition	// 记录当前位置为开始值
-		});
-	}
+		$slide.css("left", slideLeft);
+		$curProgress.width(curWidth);
 
-	dragEnd(){
-		const slide = document.getElementById("slide");
-		this.setState({
-			isDragging: false
-		});
-
-		slide.removeEventListener('mousemove', this.slideDraging);
-      	slide.removeEventListener('mouseup', this.dragEnd);
-	}
-
-	setPosition(clientX){
-		const progress = document.getElementById("progress");
-		const contentWidth = progress.offsetWidth;
-		// 计算当前拖动位置与初始拖动位置的距离
-		const diff = clientX - this.state.startX;
-		// 计算拖动的距离占精度条的百分比
-		const percent = (diff / contentWidth).toFixed(6) * 100;
-		console.log(percent);
-		this.setState({
-			currentPosition: Math.max(0, Math.min(
-        		this.state.startPosition + percent, 100))
-		});
-
-		this.updateView();
-	}
-
-	updateView(){
-		const slide = document.getElementById("slide");
-		slide.style.left = this.state.currentPosition + "%";
+		/*const percent = (diff / contentWidth).toFixed(6) * 100;*/
 	}
 
 	// 点击滑块
-	slideClick(event){
-		event.stopPropagation();
-		this.dragStart(event);
-
-		const that = this;
-		const slide = document.getElementById("slide");
-		slide.addEventListener('mousemove', function(event) {
-			that.slideDraging(event.clientX);
-		});
-
-		slide.addEventListener('mouseup', function() {
-			that.dragEnd();
-		})
+	slideClick(){
+		$(document).bind("mousemove", this.setPosition);
+		$(document).bind("mouseup", this.slideStop);
 	}
 
-	// 点击进度条
-	processClick(e){
-		const progress = document.getElementById("progress");
-		const slide = document.getElementById("slide");
-		const width = e.clientX - this.getOffsetX(progress) + slide.clientWidth/2;
-		slide.style.left = width + "px";
-	}
-
-	// 获取元素到浏览器左边的距离
-	getOffsetX(element){
-		let offsetLeft = element.offsetLeft;
-		if (element.offsetParent) {
-			offsetLeft += element.offsetParent.offsetLeft;
-		}
-		return offsetLeft;
+	// 停止拖动
+	slideStop(){
+		$(document).unbind("mousemove", this.setPosition);
+		$(document).unbind("mouseup", this.slideStop);
 	}
 
 	render(){
@@ -225,22 +167,33 @@ class Player extends Component {
 								onClick={this.switchCirculate}>循环方式</button>
 						<audio id="music" src={href}>当前浏览器不支持播放</audio>
 					</div>
-					<div className="player-progress" id="progress">
-						<div className="progress" onClick={this.processClick}>
-							<div className="progress-top"></div>
+					<div className="player-progress" id="content">
+						<div className="progress" onClick={this.setPosition} id="progress">
+							<div className="progress-top" id="curProgress"></div>
 						</div>
 						<span className="slide" id="slide" onMouseDown={this.slideClick}>
 							<i className="slide-inner"></i>
 						</span>
-						<span className="time"><em>00:00</em>/{time}</span>
+						<span className="time">{this.state.curTime}/{time}</span>
 					</div>
 				</div>
 			</div>
 		)
 	}
 
-	componentDidUpdate(){
-		music = document.getElementById("music");
+	componentDidMount(){
+		audio = document.getElementById("music");
+		$slide = $("#slide");
+		$progress = $("#progress");
+		$curProgress = $("#curProgress");
+		$content = $("#content");
+
+		slideWidth = $slide.width() / 2;
+		progressWidth = $progress.width();
+		progressLeft = $progress.position().left;
+		contentLeft = $content.offset().left;
+		maxLeft = progressWidth + progressLeft - slideWidth;
+		minLeft = progressLeft - slideWidth;
 	}
 }
 

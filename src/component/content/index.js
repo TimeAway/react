@@ -31,14 +31,13 @@ class Content extends Component {
 
 	choseMusic(id){
 		const num = this.state.musicList.length - 1;
-		if (id < 0) {
-			id = num;
-		}
-		if (id > num) {
-			id = 0;
-		}
+		if (id < 0) id = num;
+		if (id > num) id = 0;
+
 		this.setState({
 			currMusic: id
+		}, () => {
+			this.refs.player.play();
 		})
 	}
 
@@ -46,7 +45,7 @@ class Content extends Component {
 		return (
 			<div className="content">
 				<div className="content-left">
-					<Player music={this.state.musicList[this.state.currMusic]} choseMusic={this.choseMusic} />
+					<Player music={this.state.musicList[this.state.currMusic]} choseMusic={this.choseMusic} ref="player" />
 				</div>
 				<div className="content-right">
 					<List list={this.state.musicList} choseMusic={this.choseMusic} />
