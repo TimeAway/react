@@ -2,16 +2,20 @@ import React, { Component } from 'react';
 import './style.css';
 import $ from 'jquery';
 
-let rotateTimer = 0;		// 图片旋转计时器
-let angle = 0;				// 图片旋转的角度
-let slideLeft = 20;				// 滑块距离父容器的距离
-let slideWidth = 10;			// 滑块的宽度
-let maxLeft = 0, minLeft = 0;	// 距离左边最大、最小的距离
-let contentLeft = 0;		// 容器到屏幕左边的距离
-let progressLeft = 20;		// 进度条到父容器的距离
-let progressWidth = 0;		// 进度条的宽度
-let curWidth = 0;			// 当前进度的宽度
-let $slide = null, $progress = null, $curProgress = null, $content = null, audio = null;
+let rotateTimer = 0,		// 图片旋转计时器
+	angle = 0,				// 图片旋转的角度
+	musicTimer = 0,			// 音乐播放计时器
+	slideLeft = 20,				// 滑块距离父容器的距离
+	slideWidth = 10,			// 滑块的宽度
+	maxLeft = 0, minLeft = 0,	// 距离左边最大、最小的距离
+	contentLeft = 0,		// 容器到屏幕左边的距离
+	progressLeft = 20,		// 进度条到父容器的距离
+	progressWidth = 0,		// 进度条的宽度
+	curWidth = 0,			// 当前进度的宽度
+	duration = 0,			// 音频总长度
+	currentTime = 0,		// 当前播放时间
+	percent = 0,			// 当前进度百分比
+	$slide = null, $progress = null, $curProgress = null, $content = null, audio = null;
 
 class Player extends Component {
 	constructor(props){
@@ -20,7 +24,7 @@ class Player extends Component {
 			isMore: false,		// 歌词是否展开状态
 			isPlaying: false,	// 是否在播放
 			circulate: 1,		// 播放模式,1|随机播放 2|单曲循环 3|列表循环
-			curTime: "00:00"	// 当前播放时间
+			currentTime: "00:00"	// 当前播放时间
 		}
 
 		this.ctrlOrMore = this.ctrlOrMore.bind(this);
@@ -28,7 +32,12 @@ class Player extends Component {
 		this.playNextMusic = this.playNextMusic.bind(this);
 		this.playOrPauseMusic = this.playOrPauseMusic.bind(this);
 		this.switchCirculate = this.switchCirculate.bind(this);
-		this.slideClick = this.slideClick.bind(this);
+		this.slideMouseDown = this.slideMouseDown.bind(this);
+		this.slideMouseUp = this.slideMouseUp.bind(this);
+		this.canplay = this.canplay.bind(this);
+		this.jump = this.jump.bind(this);
+		this.playing = this.playing.bind(this);
+		this.dragging = this.dragging.bind(this);
 	}
 
 	// 歌词的展示，全部展示或部分展示
@@ -68,16 +77,100 @@ class Player extends Component {
 		}
 	}
 
+	// 当前播放时间的计算（由秒转为mm:ss格式）
+	timeFormat(){
+		 let seconds = 0, minutes = 0;
+		 seconds = parseInt(currentTime % 60);
+		 minutes = parseInt((currentTime / 60) % 60);
+		 seconds = ("0" + seconds).slice(-2);
+		 minutes = ("0" + minutes).slice(-2);
+		 return minutes + ":" + seconds;
+	}
+
+	musicTimer(){
+		this.musicTimerStop();
+		musicTimer = setInterval(this.playing, 1000);
+	}
+
+	musicTimerStop(){
+		clearInterval(musicTimer);
+		musicTimer = 0;
+	}
+
+	// 当音频能够播放时，触发该事件，用于初始化audio对象的相关数据
+	canplay(){
+		duration = audio.duration;
+	}
+
 	play(){
-		audio.play();
+		this.musicTimer();
 		this.rotate();
 		this.setState({
 			isPlaying: true
-		})
+		}, () => {
+			audio.play();
+		});
+	}
+
+	setCurrentTime(){
+		if ("fastSeek" in audio) {
+			audio.fastSeek(currentTime);	// 谷歌浏览器不支持该方法
+		}else{
+			audio.currentTime = currentTime;
+		}
+
+		if (audio.paused) {
+			this.play();	
+		}
+	}
+
+	// 持续播放
+	playing(){
+		if (audio.ended) {	// 如果播放结束
+			this.pause();
+			return;
+		}
+		curWidth = progressWidth * percent;
+		slideLeft = curWidth + progressLeft - slideWidth;
+		percent = (currentTime / duration).toFixed(6);
+		currentTime = audio.currentTime;
+		this.updateView();
+	}
+
+	// 跳转播放
+	jump(event){
+		this.setPosition(event);
+		this.updateView();
+		this.setCurrentTime();
+	}
+
+	// 拖动播放
+	dragging(event){
+		this.setPosition(event);
+		this.updateView();
+	}
+
+	setPosition(event){
+		slideLeft = event.clientX - contentLeft + slideWidth;
+		curWidth = slideLeft - progressLeft + slideWidth;
+		percent = (curWidth / progressWidth).toFixed(6);
+		currentTime = duration * percent;
+	}
+
+	updateView(){
+		slideLeft = Math.max(minLeft, Math.min(maxLeft, slideLeft));	// 防止滑块滑出进度条
+		currentTime = Math.max(0, Math.min(duration, currentTime));		// 防止时间超出
+		curWidth = Math.max(0, Math.min(progressWidth, curWidth));		// 已播放进度
+		$slide.css("left", slideLeft);	// 更新滑块位置
+		$curProgress.width(curWidth);	// 更新进度条
+		this.setState({					// 更新时间
+			currentTime: this.timeFormat()
+		});
 	}
 
 	pause(){
 		audio.pause();
+		this.musicTimerStop();
 		this.rotatePause();
 		this.setState({
 			isPlaying: false
@@ -97,28 +190,17 @@ class Player extends Component {
 		})
 	}
 
-	setPosition(event){
-		slideLeft = event.clientX - contentLeft + slideWidth;
-		slideLeft = slideLeft > maxLeft ? maxLeft : slideLeft;
-		slideLeft = slideLeft < minLeft ? minLeft : slideLeft;	// 防止滑块滑出进度条
-		curWidth = slideLeft - progressLeft + slideWidth;
-
-		$slide.css("left", slideLeft);
-		$curProgress.width(curWidth);
-
-		/*const percent = (diff / contentWidth).toFixed(6) * 100;*/
-	}
-
-	// 点击滑块
-	slideClick(){
-		$(document).bind("mousemove", this.setPosition);
-		$(document).bind("mouseup", this.slideStop);
+	// 点击拖动滑块
+	slideMouseDown(){
+		$(document).bind("mousemove", this.dragging);
+		$(document).bind("mouseup", this.slideMouseUp);
 	}
 
 	// 停止拖动
-	slideStop(){
-		$(document).unbind("mousemove", this.setPosition);
-		$(document).unbind("mouseup", this.slideStop);
+	slideMouseUp(){
+		this.setCurrentTime();
+		$(document).unbind("mousemove", this.dragging);
+		$(document).unbind("mouseup", this.slideMouseUp);
 	}
 
 	render(){
@@ -165,16 +247,16 @@ class Player extends Component {
 								className={this.state.circulate === 1 ? 'random' : this.state.circulate === 2 ? 'single' : 'order' }
 								title={this.state.circulate === 1 ? '随机播放' : this.state.circulate === 2 ? '单曲循环' : '列表循环' }
 								onClick={this.switchCirculate}>循环方式</button>
-						<audio id="music" src={href}>当前浏览器不支持播放</audio>
+						<audio id="music" src={href} onCanPlay={this.canplay}>当前浏览器不支持播放</audio>
 					</div>
 					<div className="player-progress" id="content">
-						<div className="progress" onClick={this.setPosition} id="progress">
+						<div className="progress" onClick={this.jump} id="progress">
 							<div className="progress-top" id="curProgress"></div>
 						</div>
-						<span className="slide" id="slide" onMouseDown={this.slideClick}>
+						<span className="slide" id="slide" onMouseDown={this.slideMouseDown}>
 							<i className="slide-inner"></i>
 						</span>
-						<span className="time">{this.state.curTime}/{time}</span>
+						<span className="time">{this.state.currentTime}/{time}</span>
 					</div>
 				</div>
 			</div>
