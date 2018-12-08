@@ -44,6 +44,7 @@ class Player extends Component {
 		this.jump = this.jump.bind(this);
 		this.playing = this.playing.bind(this);
 		this.dragging = this.dragging.bind(this);
+		this.onError = this.onError.bind(this);
 	}
 
 	// 设置当前播放的音乐
@@ -265,6 +266,11 @@ class Player extends Component {
 		});
 	}
 
+	onError(){
+		this.pause();
+		console.log("加载错误");
+	}
+
 	render(){
 		const { id, title, singer, href, album, image, lyric } = musicList[this.state.currentMusic];
 		return (
@@ -310,7 +316,7 @@ class Player extends Component {
 								className={this.state.circulate === 1 ? 'random' : this.state.circulate === 2 ? 'single' : 'order' }
 								title={this.state.circulate === 1 ? '随机播放' : this.state.circulate === 2 ? '单曲循环' : '列表循环' }
 								onClick={this.switchCirculate}>循环方式</button>
-						<audio id="music" src={href} onCanPlay={this.onCanplay}>当前浏览器不支持播放</audio>
+						<audio id="music" src={href} onError={this.onError} onCanPlay={this.onCanplay}>当前浏览器不支持播放</audio>
 					</div>
 					<div className="player-progress" id="content">
 						<div className="progress" onClick={this.jump} id="progress">
