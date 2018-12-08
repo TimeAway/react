@@ -26,9 +26,9 @@ class Player extends Component {
 		this.state = {
 			isMore: false,				// 歌词是否展开状态
 			isPlaying: false,			// 是否在播放
-			circulate: 2,				// 播放模式,1|随机播放 2|单曲循环 3|列表循环
+			circulate: 1,				// 播放模式,1|随机播放 2|单曲循环 3|列表循环
 			currentTime: "00:00",		// 当前播放时间
-			currentMusic: 1 			// 当前播放的音乐
+			currentMusic: 0 			// 当前播放的音乐
 		}
 
 		musicList = props.list;
@@ -47,16 +47,30 @@ class Player extends Component {
 
 	// 设置当前播放的音乐
 	setCurrentMusic(id, model){
-		console.log(`id：${id},model：${model}`);
 		if (model) {
 			let index = 0;
+
 			musicList.map((item, i) => {
 				if (item.id === id) {
 					index = i;
-					return true;
+					return false;
 				}
 			});
-			index = model === 'pre' ? --index : ++index;
+
+			// 如果是随机播放
+			if (this.state.circulate === 1 || model === "random") {
+				while( id === musicList[index]['id']){
+					index = Math.floor(Math.random() * musicLength);
+				}
+			}else{
+				index = model === "pre" ? --index : ++index;				
+			}
+
+			// 如果是顺序播放，且是最后一首歌曲，停止播放
+			if (this.state.circulate === 3 && index > musicLength - 1) {
+				return;
+			}
+
 			index = index > musicLength - 1 ? 0 : index < 0 ? musicLength - 1 : index;
 			id = musicList[index]['id'];
 		}
@@ -174,27 +188,15 @@ class Player extends Component {
 		currentTime = Math.ceil(duration * percent);
 	}
 
-	// 随机播放
-	randomPlay(){
-		let index = Math.floor(Math.random() * musicLength);
-		this.setCurrentMusic(musicList[index]['id']);
-	}
-
-	// 列表循环
-	orderPlay(){
-		this.setCurrentMusic(this.state.currentMusic, 'next');
-	}
-
 	// 持续播放
 	playing(){
 		if (isDrgging) return;	// 如果正在拖动，那么不在此更新视图
 
 		if (audio.ended) {	// 当前音频播放结束
 			this.pause();
-			console.log(this.state.circulate);
 			switch(this.state.circulate){
 				case 1: 	// 随机播放
-					this.randomPlay();
+					this.setCurrentMusic(this.state.currentMusic, "random");
 					break;
 
 				case 2: 	// 单曲循环
@@ -202,7 +204,7 @@ class Player extends Component {
 					break;
 
 				case 3: 	// 列表循环
-					this.orderPlay();
+					this.setCurrentMusic(this.state.currentMusic, 'next');
 					break;
 
 				default:
