@@ -284,6 +284,7 @@ class Player extends Component {
 
 	render(){
 		const { id, title, singer, href, album, image, lyric } = musicList[this.state.currentMusic];
+		$("title").text(`${title} - ${singer} - 网易云音乐`);
 		return (
 			<div className="content-player">
 				<div className="content-player-top">
