@@ -28,6 +28,7 @@ class Player extends Component {
 			isPlaying: false,			// 是否在播放
 			circulate: 1,				// 播放模式,1|随机播放 2|单曲循环 3|列表循环
 			currentTime: "00:00",		// 当前播放时间
+			duration: "00:00",			// 总的播放时间
 			currentMusic: 0 			// 当前播放的音乐
 		}
 
@@ -81,13 +82,13 @@ class Player extends Component {
 	}
 
 	// 当前播放时间的计算（由秒转为mm:ss格式）
-	timeFormat(){
+	timeFormat(time){
 		 let seconds = 0, minutes = 0;
-		 seconds = parseInt(currentTime % 60);
-		 minutes = parseInt((currentTime / 60) % 60);
+		 seconds = parseInt(time % 60);
+		 minutes = parseInt((time / 60) % 60);
 		 seconds = ("0" + seconds).slice(-2);
 		 minutes = ("0" + minutes).slice(-2);
-		 return minutes + ":" + seconds;
+		 return `${minutes}:${seconds}`;
 	}
 
 	// 歌词的展示，全部展示或部分展示
@@ -164,7 +165,7 @@ class Player extends Component {
 		}
 
 		if (audio.paused) {
-			this.play();	
+			this.play();
 		}
 	}
 
@@ -176,7 +177,7 @@ class Player extends Component {
 		$slide.css("left", slideLeft);	// 更新滑块位置
 		$curProgress.width(curWidth);	// 更新进度条
 		this.setState({					// 更新时间
-			currentTime: this.timeFormat()
+			currentTime: this.timeFormat(currentTime)
 		});
 	}
 
@@ -257,12 +258,15 @@ class Player extends Component {
 
 	// 当音频能够播放时，用于初始化audio对象的相关数据（在加载音频或重新加载音频都会触发此事件）
 	onCanplay(){
-		duration = Math.ceil(audio.duration);
+		duration = audio.duration;
 		angle = 0;	// 重置图片旋转角度
+		this.setState({
+			duration: this.timeFormat(duration)
+		});
 	}
 
 	render(){
-		const { id, title, singer, time, href, album, image, lyric } = musicList[this.state.currentMusic];
+		const { id, title, singer, href, album, image, lyric } = musicList[this.state.currentMusic];
 		return (
 			<div className="content-player">
 				<div className="content-player-top">
@@ -315,7 +319,7 @@ class Player extends Component {
 						<span className="slide" id="slide" onMouseDown={this.slideMouseDown}>
 							<i className="slide-inner"></i>
 						</span>
-						<span className="time">{this.state.currentTime}/{time}</span>
+						<span className="time">{this.state.currentTime}/{this.state.duration}</span>
 					</div>
 				</div>
 			</div>
