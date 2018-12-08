@@ -2,7 +2,7 @@
 
 ### 一款基于react开发的简单的网页音乐播放器
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+此项目通过 [Create React App] 脚手架工具搭建
 
 ## Available Scripts
 
