@@ -29,7 +29,8 @@ class Player extends Component {
 			circulate: 1,				// 播放模式,1|随机播放 2|单曲循环 3|列表循环
 			currentTime: "00:00",		// 当前播放时间
 			duration: "00:00",			// 总的播放时间
-			currentMusic: 0 			// 当前播放的音乐
+			currentMusic: 0, 			// 当前播放的音乐
+			hasVolume: true				// 是否有声音
 		}
 
 		musicList = props.list;
@@ -38,6 +39,7 @@ class Player extends Component {
 		this.setCurrentMusic = this.setCurrentMusic.bind(this);
 		this.playOrPauseMusic = this.playOrPauseMusic.bind(this);
 		this.switchCirculate = this.switchCirculate.bind(this);
+		this.switchVolume = this.switchVolume.bind(this);
 		this.slideMouseDown = this.slideMouseDown.bind(this);
 		this.slideMouseUp = this.slideMouseUp.bind(this);
 		this.onCanplay = this.onCanplay.bind(this);
@@ -243,6 +245,15 @@ class Player extends Component {
 		})
 	}
 
+	// 切换声音模式
+	switchVolume(){
+		this.setState({
+			hasVolume: !this.state.hasVolume
+		}, () => {
+			audio.volume = this.state.hasVolume ? 1 : 0;	// 1最大声音，0是最小声音
+		})
+	}
+
 	// 点击拖动滑块
 	slideMouseDown(){
 		$(document).bind("mousemove", this.dragging);
@@ -311,7 +322,10 @@ class Player extends Component {
 							title="播放/暂停"
 							onClick={this.playOrPauseMusic}>播放/暂停</button>
 						<button type="button" className="next" title="下一首" onClick={this.setCurrentMusic.bind(this, id, 'next')}>下一首</button>
-						<button type="button" className="volume" title="音量">音量</button>
+						<button type="button"
+								onClick={this.switchVolume}
+								className={this.state.hasVolume ? 'volume' : 'no-volume'} 
+								title="音量">音量</button>
 						<button type="button"
 								className={this.state.circulate === 1 ? 'random' : this.state.circulate === 2 ? 'single' : 'order' }
 								title={this.state.circulate === 1 ? '随机播放' : this.state.circulate === 2 ? '单曲循环' : '列表循环' }

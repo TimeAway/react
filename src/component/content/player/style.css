@@ -102,6 +102,17 @@
 .player-control .volume:hover{
 	background-position: -35px -251px;
 }
+.player-control .no-volume{
+	position: absolute;
+	right: 20px;
+	top: 18px;
+	height: 18px;
+	width: 18px;
+	background: url('../playbar.png') no-repeat -112px -72px;
+}
+.player-control .no-volume:hover{
+	background-position: -134px -72px;
+}
 
 .player-control .random, .single, .order{
 	position: absolute;
