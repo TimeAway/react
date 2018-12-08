@@ -24,3 +24,28 @@
 ---
 
 ## 项目结构
+```
+react-music-player
+├── README.md
+├── node_modules
+├── package.json
+├── .gitignore
+├── public   公共文件
+│   ├── favicon.ico
+│   ├── index.html
+│   └── manifest.json
+└── src      项目源码
+    ├── component     组件
+    │   ├── App           包含所有组件
+    │   ├── Header        顶部
+    │   │   │── Contribute    投稿
+    │   │   │── Login         登录
+    │   │   │── Logo          Logo
+    │   │   │── Nav           导航
+    │   │   └── Search        搜索
+    │   ├── Content       内容
+    │   │   ├── List          音乐列表
+    │   │   └── Player        播放器
+    │   └── Footer        底部
+    └── static        静态文件
+```
